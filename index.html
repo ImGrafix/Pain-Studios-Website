@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pain Studios - Player Portal</title>
+    <title>Pain Studios - Community Portal</title>
     <style>
         /* BASE STYLES */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Courier New", Courier, monospace; }
@@ -42,7 +42,7 @@
         .btn-retro:hover { filter: brightness(1.2); }
         .btn-retro:active { transform: translateY(1px); }
 
-        /* LOGGED IN USERNAME DISPLAY */
+        /* USER DISPLAY */
         #user-identity { display: none; }
         .username-display { 
             color: #DC143C; 
@@ -77,7 +77,7 @@
         .stat-label { color: #666; }
         .stat-value { color: #DC143C; font-weight: bold; }
 
-        /* MODALS (POPUPS) */
+        /* MODALS */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -86,11 +86,10 @@
             z-index: 2000;
             justify-content: center; align-items: center;
         }
-        .modal-content { background: #1a1a1a; border: 2px solid #DC143C; padding: 25px; width: 350px; box-shadow: 0 0 20px #000; }
+        .modal-content { background: #1a1a1a; border: 2px solid #DC143C; padding: 25px; width: 350px; }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-size: 10px; color: #666; margin-bottom: 5px; }
         .input-group input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; outline: none; }
-        .input-group input:focus { border-color: #DC143C; }
 
         .container { margin-top: 150px; text-align: center; padding: 20px; }
     </style>
@@ -100,10 +99,13 @@
     <header class="topbar">
         <div class="logo">Pain Studios</div>
         
-        <div class="nav-container">
+        <nav class="nav-container">
             <button class="btn-retro">Home</button>
-            <button class="btn-retro">Projects</button>
-        </div>
+            <button class="btn-retro">Games</button>
+            <button class="btn-retro">People</button>
+            <button class="btn-retro">Forums</button>
+            <button class="btn-retro">About</button>
+        </nav>
 
         <div class="auth-container">
             <div id="logged-out-tools">
@@ -156,7 +158,6 @@
     </main>
 
     <script>
-        // On Page Load: Check if a player is already saved in the browser
         window.onload = function() {
             const savedData = localStorage.getItem('painStudiosPlayerData');
             if (savedData) {
@@ -168,11 +169,8 @@
         function showModal(id) { document.getElementById(id).style.display = 'flex'; }
         function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Handles both Signup and Login
         function processAuth(inputId) {
             const name = document.getElementById(inputId).value || "PLAYER_01";
-            
-            // Generate player data
             const playerData = {
                 name: name,
                 rank: "NOVICE",
@@ -181,43 +179,34 @@
                 friends: 0,
                 joined: new Date().toLocaleDateString()
             };
-
-            // Save to LocalStorage
             localStorage.setItem('painStudiosPlayerData', JSON.stringify(playerData));
-            
             applyLoginState(playerData);
             hideModal('loginModal');
             hideModal('signupModal');
         }
 
-        // Updates the UI to show the player is logged in
         function applyLoginState(data) {
             document.querySelector('.username-display').innerText = data.name.toUpperCase();
             document.getElementById('logged-out-tools').style.display = 'none';
             document.getElementById('user-identity').style.display = 'block';
-            
-            // Fill Sidebar Stats
             document.getElementById('stat-rank').innerText = data.rank;
             document.getElementById('stat-level').innerText = data.level;
             document.getElementById('stat-xp').innerText = data.xp + "/500";
             document.getElementById('stat-friends').innerText = data.friends;
             document.getElementById('stat-joined').innerText = data.joined;
-
-            // Update Page Text
             document.getElementById('auth-status').innerText = "ONLINE: " + data.name;
             document.getElementById('auth-status').style.color = "#DC143C";
         }
 
         function handleLogout() {
             localStorage.removeItem('painStudiosPlayerData');
-            location.reload(); // Hard refresh to reset the state
+            location.reload();
         }
 
         function togglePanel() {
             document.getElementById('userPanel').classList.toggle('open');
         }
 
-        // Close popups if clicking the dark background
         window.onclick = function(event) {
             if (event.target.className === 'modal-overlay') {
                 event.target.style.display = 'none';
@@ -225,5 +214,4 @@
         }
     </script>
 </body>
-
 </html>
