@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pain Studios - Access</title>
+    <title>Pain Studios - Player Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Courier New", Courier, monospace; }
         body { background-color: #0a0a0a; color: #eee; overflow-x: hidden; }
@@ -22,7 +22,7 @@
         .nav-container { flex: 2; display: flex; justify-content: center; }
         .auth-container { flex: 1; display: flex; justify-content: flex-end; gap: 8px; }
 
-        /* Retro Crimson Buttons */
+        /* Shared Button Style */
         .btn-retro {
             display: inline-block;
             padding: 8px 16px;
@@ -36,12 +36,29 @@
             border-radius: 3px;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
             cursor: pointer;
-            transition: filter 0.2s;
         }
         .btn-retro:hover { filter: brightness(1.2); }
-        .btn-retro:active { transform: translateY(1px); }
 
-        /* Modal Overlay */
+        /* User Identity (Hidden by default) */
+        #user-identity { display: none; align-items: center; }
+        .username-display { color: #DC143C; font-weight: bold; cursor: pointer; text-decoration: underline; }
+
+        /* Sliding Side Panel */
+        .side-panel {
+            position: fixed;
+            top: 0; right: -300px; /* Hidden off-screen */
+            width: 250px; height: 100%;
+            background: #1a1a1a;
+            border-left: 2px solid #DC143C;
+            z-index: 3000;
+            transition: 0.4s;
+            padding: 20px;
+            box-shadow: -10px 0 20px rgba(0,0,0,0.5);
+        }
+        .side-panel.open { right: 0; }
+        .panel-header { border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 20px; color: #DC143C; }
+
+        /* Modals */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -50,22 +67,9 @@
             z-index: 2000;
             justify-content: center; align-items: center;
         }
-
-        .modal-content {
-            background: #1a1a1a;
-            border: 2px solid #DC143C;
-            padding: 25px;
-            width: 380px;
-            box-shadow: 0 0 30px #900;
-            position: relative;
-        }
-
+        .modal-content { background: #1a1a1a; border: 2px solid #DC143C; padding: 25px; width: 350px; }
         .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 11px; color: #999; margin-bottom: 5px; text-transform: uppercase; }
-        .input-group input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; outline: none; }
-        .input-group input:focus { border-color: #DC143C; }
-
-        .close-btn { background: none; border: none; color: #666; cursor: pointer; display: block; margin: 15px auto 0; text-decoration: underline; font-size: 12px; }
+        .input-group input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; }
 
         .container { margin-top: 150px; text-align: center; }
     </style>
@@ -74,62 +78,75 @@
 
     <header class="topbar">
         <div class="logo">Pain Studios</div>
+        
         <div class="nav-container">
-            <button class="btn-retro" style="margin-right: 5px;">Home</button>
-            <button class="btn-retro">Games</button>
+            <button class="btn-retro">Home</button>
+            <button class="btn-retro" style="margin-left: 5px;">Games</button>
         </div>
+
         <div class="auth-container">
-            <button class="btn-retro" onclick="openModal('signupModal')">Sign Up</button>
-            <button class="btn-retro" onclick="openModal('loginModal')">Log In</button>
+            <div id="logged-out-tools">
+                <button class="btn-retro" onclick="openModal('signupModal')">Sign Up</button>
+                <button class="btn-retro" onclick="openModal('loginModal')">Log In</button>
+            </div>
+            <div id="user-identity">
+                <span class="username-display" onclick="togglePanel()">PLAYER_01</span>
+            </div>
         </div>
     </header>
 
-    <div class="modal-overlay" id="signupModal">
-        <div class="modal-content">
-            <h2 style="color:#DC143C; text-align:center; margin-bottom:15px;">CREATE ACCOUNT</h2>
-            <form>
-                <div class="input-group"><label>Username</label><input type="text" placeholder="New Player"></div>
-                <div class="input-group"><label>Email</label><input type="email" placeholder="email@painstudios.com"></div>
-                <div class="input-group"><label>Password</label><input type="password" placeholder="********"></div>
-                <button type="submit" class="btn-retro" style="width: 100%;">Initialize</button>
-            </form>
-            <button class="close-btn" onclick="closeModal('signupModal')">Cancel</button>
-        </div>
+    <div id="userPanel" class="side-panel">
+        <div class="panel-header">PLAYER MENU</div>
+        <p style="font-size: 12px; margin-bottom: 20px;">Logged in as: PLAYER_01</p>
+        <button class="btn-retro" style="width: 100%;" onclick="logout()">Log Out</button>
+        <button class="btn-retro" style="width: 100%; margin-top: 10px; background: #444;" onclick="togglePanel()">Close</button>
     </div>
 
     <div class="modal-overlay" id="loginModal">
         <div class="modal-content">
-            <h2 style="color:#DC143C; text-align:center; margin-bottom:15px;">PLAYER LOGIN</h2>
-            <form>
-                <div class="input-group"><label>Username / Email</label><input type="text"></div>
-                <div class="input-group"><label>Password</label><input type="password"></div>
-                <button type="submit" class="btn-retro" style="width: 100%;">Enter System</button>
-            </form>
-            <button class="close-btn" onclick="closeModal('loginModal')">Go Back</button>
+            <h2 style="color:#DC143C; text-align:center; margin-bottom:15px;">LOGIN</h2>
+            <div class="input-group"><input type="text" id="loginUser" placeholder="Username"></div>
+            <div class="input-group"><input type="password" placeholder="Password"></div>
+            <button class="btn-retro" style="width: 100%;" onclick="login()">Enter System</button>
         </div>
     </div>
 
     <main class="container">
         <h1>PAIN STUDIOS</h1>
-        <p>Select an option from the topbar to begin.</p>
+        <p id="status-text">System Status: Offline. Please log in.</p>
     </main>
 
     <script>
-        // Function to open a specific modal
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
+        const loggedOutTools = document.getElementById('logged-out-tools');
+        const userIdentity = document.getElementById('user-identity');
+        const userPanel = document.getElementById('userPanel');
+        const statusText = document.getElementById('status-text');
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Simulate Login
+        function login() {
+            const name = document.getElementById('loginUser').value || "PLAYER_01";
+            document.querySelector('.username-display').innerText = name.toUpperCase();
+            
+            closeModal('loginModal');
+            loggedOutTools.style.display = 'none';
+            userIdentity.style.display = 'flex';
+            statusText.innerText = "Welcome back, " + name;
         }
 
-        // Function to close a specific modal
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
+        // Simulate Logout
+        function logout() {
+            togglePanel();
+            loggedOutTools.style.display = 'flex';
+            userIdentity.style.display = 'none';
+            statusText.innerText = "System Status: Offline. Please log in.";
         }
 
-        // Close modal if user clicks on the dark background
-        window.onclick = function(event) {
-            if (event.target.className === 'modal-overlay') {
-                event.target.style.display = 'none';
-            }
+        // Toggle Sidebar
+        function togglePanel() {
+            userPanel.classList.toggle('open');
         }
     </script>
 
