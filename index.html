@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pain Studios - Register</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Courier New", Courier, monospace; }
+        body { background-color: #0a0a0a; color: #eee; } /* Solid dark background */
+
+        /* Topbar */
+        .topbar {
+            background: linear-gradient(to bottom, #333 0%, #111 100%);
+            border-bottom: 3px solid #900;
+            height: 70px;
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
+            display: flex; align-items: center; padding: 0 30px;
+        }
+
+        .logo { font-size: 1.4rem; font-weight: bold; color: #DC143C; text-shadow: 2px 2px #000; flex: 1; }
+        .nav-container { flex: 2; display: flex; justify-content: center; }
+        .auth-container { flex: 1; display: flex; justify-content: flex-end; gap: 5px; }
+
+        /* Buttons */
+        .btn-retro {
+            display: block;
+            padding: 6px 14px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #ff3355 0%, #dc143c 50%, #800000 51%, #a00000 100%);
+            border: 1px solid #000;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center; align-items: center;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border: 2px solid #DC143C;
+            padding: 25px;
+            width: 380px;
+            box-shadow: 0 0 30px #900;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 11px; color: #999; margin-bottom: 5px; text-transform: uppercase; }
+        .input-group input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; }
+        
+        /* Strength Meter */
+        .strength-meter {
+            height: 4px;
+            width: 100%;
+            background: #333;
+            margin-top: 5px;
+            position: relative;
+        }
+        .strength-bar {
+            height: 100%;
+            width: 30%; /* This would be controlled by JS */
+            background: #DC143C;
+            transition: width 0.3s;
+        }
+
+        .tos-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            margin: 15px 0;
+            color: #ccc;
+        }
+
+        .close-btn { background: none; border: none; color: #666; cursor: pointer; display: block; margin: 10px auto 0; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="logo">Pain Studios</div>
+        <div class="nav-container">
+            <ul style="list-style:none; display:flex; gap:5px;">
+                <li><a href="#" class="btn-retro">Home</a></li>
+                <li><a href="#" class="btn-retro">Games</a></li>
+            </ul>
+        </div>
+        <div class="auth-container">
+            <button class="btn-retro" id="signupBtn">Sign Up</button>
+        </div>
+    </header>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <h2 style="color:#DC143C; text-align:center; margin-bottom:15px;">NEW PLAYER</h2>
+            <form>
+                <div class="input-group">
+                    <label>Account Name</label>
+                    <input type="text" placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="user@painstudios.com">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="********">
+                    <div class="strength-meter"><div class="strength-bar"></div></div>
+                </div>
+                <div class="tos-group">
+                    <input type="checkbox" id="tos">
+                    <label for="tos">I accept the Terms of Service</label>
+                </div>
+                <button type="submit" class="btn-retro" style="width: 100%;">Create Account</button>
+            </form>
+            <button class="close-btn" id="closeBtn">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modalOverlay');
+        document.getElementById('signupBtn').onclick = () => modal.style.display = 'flex';
+        document.getElementById('closeBtn').onclick = () => modal.style.display = 'none';
+    </script>
+</body>
+</html>
