@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pain Studios - Instant Access</title>
+    <title>Pain Studios - Player Portal</title>
     <style>
+        /* BASE STYLES */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Courier New", Courier, monospace; }
         body { background-color: #0a0a0a; color: #eee; overflow-x: hidden; }
 
-        /* Topbar */
+        /* TOPBAR */
         .topbar {
             background: linear-gradient(to bottom, #333 0%, #111 100%);
             border-bottom: 3px solid #900;
@@ -22,7 +23,7 @@
         .nav-container { flex: 2; display: flex; justify-content: center; gap: 5px; }
         .auth-container { flex: 1; display: flex; justify-content: flex-end; gap: 8px; }
 
-        /* Retro Crimson Buttons */
+        /* RETRO CRIMSON BUTTONS */
         .btn-retro {
             display: inline-block;
             padding: 8px 16px;
@@ -36,10 +37,12 @@
             border-radius: 3px;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
             cursor: pointer;
+            transition: filter 0.2s;
         }
         .btn-retro:hover { filter: brightness(1.2); }
+        .btn-retro:active { transform: translateY(1px); }
 
-        /* Username styling */
+        /* LOGGED IN USERNAME DISPLAY */
         #user-identity { display: none; }
         .username-display { 
             color: #DC143C; 
@@ -49,9 +52,10 @@
             padding: 5px 15px;
             background: #000;
             text-transform: uppercase;
+            box-shadow: 0 0 5px #900;
         }
 
-        /* Side Panel */
+        /* SLIDING SIDE PANEL */
         .side-panel {
             position: fixed;
             top: 0; right: -320px;
@@ -67,11 +71,13 @@
         .side-panel.open { right: 0; }
         .panel-header { color: #DC143C; font-size: 1.2rem; border-bottom: 2px solid #900; padding-bottom: 10px; margin-bottom: 20px; }
 
+        /* STATS BOX */
         .stats-box { background: #000; border: 1px solid #333; padding: 15px; margin-bottom: 20px; }
-        .stat-line { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; }
+        .stat-line { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px; }
+        .stat-label { color: #666; }
         .stat-value { color: #DC143C; font-weight: bold; }
 
-        /* Modals */
+        /* MODALS (POPUPS) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -80,22 +86,25 @@
             z-index: 2000;
             justify-content: center; align-items: center;
         }
-        .modal-content { background: #1a1a1a; border: 2px solid #DC143C; padding: 25px; width: 350px; }
+        .modal-content { background: #1a1a1a; border: 2px solid #DC143C; padding: 25px; width: 350px; box-shadow: 0 0 20px #000; }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-size: 10px; color: #666; margin-bottom: 5px; }
-        .input-group input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; }
+        .input-group input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; outline: none; }
+        .input-group input:focus { border-color: #DC143C; }
 
-        .container { margin-top: 150px; text-align: center; }
+        .container { margin-top: 150px; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
 
     <header class="topbar">
         <div class="logo">Pain Studios</div>
+        
         <div class="nav-container">
             <button class="btn-retro">Home</button>
             <button class="btn-retro">Games</button>
         </div>
+
         <div class="auth-container">
             <div id="logged-out-tools">
                 <button class="btn-retro" onclick="showModal('signupModal')">Sign Up</button>
@@ -110,28 +119,30 @@
     <div id="userPanel" class="side-panel">
         <div class="panel-header">PLAYER PROFILE</div>
         <div class="stats-box">
-            <div class="stat-line"><span>RANK:</span> <span class="stat-value">NOVICE</span></div>
-            <div class="stat-line"><span>LEVEL:</span> <span class="stat-value">1</span></div>
-            <div class="stat-line"><span>XP:</span> <span class="stat-value">0/500</span></div>
+            <div class="stat-line"><span class="stat-label">RANK:</span> <span id="stat-rank" class="stat-value">---</span></div>
+            <div class="stat-line"><span class="stat-label">LEVEL:</span> <span id="stat-level" class="stat-value">0</span></div>
+            <div class="stat-line"><span class="stat-label">XP:</span> <span id="stat-xp" class="stat-value">0/500</span></div>
+            <div class="stat-line"><span class="stat-label">FRIENDS:</span> <span id="stat-friends" class="stat-value">0</span></div>
+            <div class="stat-line"><span class="stat-label">JOINED:</span> <span id="stat-joined" style="color:#666; font-size:10px;">---</span></div>
         </div>
         <button class="btn-retro" style="margin-top: auto;" onclick="handleLogout()">Terminate Session</button>
-        <button style="background:none; border:none; color:#555; cursor:pointer; margin-top:10px;" onclick="togglePanel()">[ CLOSE ]</button>
+        <button style="background:none; border:none; color:#555; cursor:pointer; margin-top:10px; font-size:11px;" onclick="togglePanel()">[ CLOSE PANEL ]</button>
     </div>
 
     <div id="loginModal" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="color:#DC143C; margin-bottom:15px;">LOGIN</h2>
+            <h2 style="color:#DC143C; text-align:center; margin-bottom:20px;">SYSTEM LOGIN</h2>
             <div class="input-group"><label>USERNAME</label><input type="text" id="loginUser" placeholder="Enter Name"></div>
             <div class="input-group"><label>PASSWORD</label><input type="password" placeholder="********"></div>
-            <button class="btn-retro" style="width:100%" onclick="processAuth('loginUser')">Enter System</button>
+            <button class="btn-retro" style="width:100%" onclick="processAuth('loginUser')">Access Database</button>
             <button class="btn-retro" style="width:100%; margin-top:5px; background:#333;" onclick="hideModal('loginModal')">Cancel</button>
         </div>
     </div>
 
     <div id="signupModal" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="color:#DC143C; margin-bottom:15px;">SIGN UP</h2>
-            <div class="input-group"><label>CHOOSE USERNAME</label><input type="text" id="signupUser" placeholder="New Player"></div>
+            <h2 style="color:#DC143C; text-align:center; margin-bottom:20px;">NEW PLAYER</h2>
+            <div class="input-group"><label>CREATE USERNAME</label><input type="text" id="signupUser" placeholder="Username"></div>
             <div class="input-group"><label>EMAIL</label><input type="email" placeholder="user@pain.com"></div>
             <div class="input-group"><label>PASSWORD</label><input type="password" placeholder="********"></div>
             <button class="btn-retro" style="width:100%" onclick="processAuth('signupUser')">Initialize & Join</button>
@@ -141,43 +152,72 @@
 
     <main class="container">
         <h1>PAIN STUDIOS</h1>
-        <p>Authentication System: <span id="auth-status" style="color:#666">Ready</span></p>
+        <p>Mainframe Status: <span id="auth-status" style="color:#666">Standby</span></p>
     </main>
 
     <script>
+        // On Page Load: Check if a player is already saved in the browser
+        window.onload = function() {
+            const savedData = localStorage.getItem('painStudiosPlayerData');
+            if (savedData) {
+                const playerData = JSON.parse(savedData);
+                applyLoginState(playerData);
+            }
+        };
+
         function showModal(id) { document.getElementById(id).style.display = 'flex'; }
         function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Combined logic for login and signup success
+        // Handles both Signup and Login
         function processAuth(inputId) {
             const name = document.getElementById(inputId).value || "PLAYER_01";
             
-            // Switch UI to logged in state
-            document.querySelector('.username-display').innerText = name.toUpperCase();
-            document.getElementById('logged-out-tools').style.display = 'none';
-            document.getElementById('user-identity').style.display = 'block';
+            // Generate player data
+            const playerData = {
+                name: name,
+                rank: "NOVICE",
+                level: 1,
+                xp: 0,
+                friends: 0,
+                joined: new Date().toLocaleDateString()
+            };
+
+            // Save to LocalStorage
+            localStorage.setItem('painStudiosPlayerData', JSON.stringify(playerData));
             
-            // Update Main Text
-            document.getElementById('auth-status').innerText = "Authorized: " + name;
-            document.getElementById('auth-status').style.color = "#DC143C";
-            
-            // Close whichever modal was open
+            applyLoginState(playerData);
             hideModal('loginModal');
             hideModal('signupModal');
         }
 
+        // Updates the UI to show the player is logged in
+        function applyLoginState(data) {
+            document.querySelector('.username-display').innerText = data.name.toUpperCase();
+            document.getElementById('logged-out-tools').style.display = 'none';
+            document.getElementById('user-identity').style.display = 'block';
+            
+            // Fill Sidebar Stats
+            document.getElementById('stat-rank').innerText = data.rank;
+            document.getElementById('stat-level').innerText = data.level;
+            document.getElementById('stat-xp').innerText = data.xp + "/500";
+            document.getElementById('stat-friends').innerText = data.friends;
+            document.getElementById('stat-joined').innerText = data.joined;
+
+            // Update Page Text
+            document.getElementById('auth-status').innerText = "ONLINE: " + data.name;
+            document.getElementById('auth-status').style.color = "#DC143C";
+        }
+
         function handleLogout() {
-            togglePanel();
-            document.getElementById('logged-out-tools').style.display = 'flex';
-            document.getElementById('user-identity').style.display = 'none';
-            document.getElementById('auth-status').innerText = "Ready";
-            document.getElementById('auth-status').style.color = "#666";
+            localStorage.removeItem('painStudiosPlayerData');
+            location.reload(); // Hard refresh to reset the state
         }
 
         function togglePanel() {
             document.getElementById('userPanel').classList.toggle('open');
         }
 
+        // Close popups if clicking the dark background
         window.onclick = function(event) {
             if (event.target.className === 'modal-overlay') {
                 event.target.style.display = 'none';
