@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pain Studios - Community Portal</title>
+    <title>Pain Studios - Unified ID System</title>
     <style>
         /* BASE STYLES */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Courier New", Courier, monospace; }
@@ -23,13 +23,13 @@
         .nav-container { flex: 2; display: flex; justify-content: center; gap: 5px; }
         .auth-container { flex: 1; display: flex; justify-content: flex-end; gap: 8px; }
 
-        /* RETRO CRIMSON BUTTONS */
+        /* BUTTONS */
         .btn-retro {
             display: inline-block;
             padding: 8px 16px;
             color: white;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: bold;
             text-transform: uppercase;
             background: linear-gradient(to bottom, #ff3355 0%, #dc143c 50%, #800000 51%, #a00000 100%);
@@ -37,12 +37,10 @@
             border-radius: 3px;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
             cursor: pointer;
-            transition: filter 0.2s;
         }
         .btn-retro:hover { filter: brightness(1.2); }
-        .btn-retro:active { transform: translateY(1px); }
+        .btn-retro.danger { background: linear-gradient(to bottom, #900 0%, #600 50%, #300 51%, #400 100%); }
 
-        /* USER DISPLAY */
         #user-identity { display: none; }
         .username-display { 
             color: #DC143C; 
@@ -52,10 +50,9 @@
             padding: 5px 15px;
             background: #000;
             text-transform: uppercase;
-            box-shadow: 0 0 5px #900;
         }
 
-        /* SLIDING SIDE PANEL */
+        /* SIDE PANEL */
         .side-panel {
             position: fixed;
             top: 0; right: -320px;
@@ -71,8 +68,7 @@
         .side-panel.open { right: 0; }
         .panel-header { color: #DC143C; font-size: 1.2rem; border-bottom: 2px solid #900; padding-bottom: 10px; margin-bottom: 20px; }
 
-        /* STATS BOX */
-        .stats-box { background: #000; border: 1px solid #333; padding: 15px; margin-bottom: 20px; }
+        .stats-box { background: #000; border: 1px solid #333; padding: 15px; margin-bottom: 15px; }
         .stat-line { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px; }
         .stat-label { color: #666; }
         .stat-value { color: #DC143C; font-weight: bold; }
@@ -91,14 +87,14 @@
         .input-group label { display: block; font-size: 10px; color: #666; margin-bottom: 5px; }
         .input-group input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; outline: none; }
 
-        .container { margin-top: 150px; text-align: center; padding: 20px; }
+        .container { margin-top: 150px; text-align: center; }
+        #delete-confirm-text { color: #ff0000; font-size: 10px; margin-top: 5px; display: none; }
     </style>
 </head>
 <body>
 
     <header class="topbar">
         <div class="logo">Pain Studios</div>
-        
         <nav class="nav-container">
             <button class="btn-retro">Home</button>
             <button class="btn-retro">Games</button>
@@ -106,14 +102,13 @@
             <button class="btn-retro">Forums</button>
             <button class="btn-retro">About</button>
         </nav>
-
         <div class="auth-container">
             <div id="logged-out-tools">
                 <button class="btn-retro" onclick="showModal('signupModal')">Sign Up</button>
                 <button class="btn-retro" onclick="showModal('loginModal')">Log In</button>
             </div>
             <div id="user-identity">
-                <div class="username-display" onclick="togglePanel()">PLAYER_01</div>
+                <div class="username-display" onclick="togglePanel()">PLAYER</div>
             </div>
         </div>
     </header>
@@ -121,22 +116,28 @@
     <div id="userPanel" class="side-panel">
         <div class="panel-header">PLAYER PROFILE</div>
         <div class="stats-box">
+            <div class="stat-line"><span class="stat-label">USER ID:</span> <span id="stat-id" class="stat-value">#0</span></div>
             <div class="stat-line"><span class="stat-label">RANK:</span> <span id="stat-rank" class="stat-value">---</span></div>
             <div class="stat-line"><span class="stat-label">LEVEL:</span> <span id="stat-level" class="stat-value">0</span></div>
             <div class="stat-line"><span class="stat-label">XP:</span> <span id="stat-xp" class="stat-value">0/500</span></div>
-            <div class="stat-line"><span class="stat-label">FRIENDS:</span> <span id="stat-friends" class="stat-value">0</span></div>
             <div class="stat-line"><span class="stat-label">JOINED:</span> <span id="stat-joined" style="color:#666; font-size:10px;">---</span></div>
         </div>
-        <button class="btn-retro" style="margin-top: auto;" onclick="handleLogout()">Terminate Session</button>
-        <button style="background:none; border:none; color:#555; cursor:pointer; margin-top:10px; font-size:11px;" onclick="togglePanel()">[ CLOSE PANEL ]</button>
+
+        <button class="btn-retro" onclick="handleLogout()">Log Out</button>
+        
+        <div style="margin-top: auto; border-top: 1px solid #333; padding-top: 15px;">
+            <button id="delete-btn" class="btn-retro danger" style="width: 100%;" onclick="confirmDeletion()">Delete Account</button>
+            <p id="delete-confirm-text">ARE YOU SURE? THIS CANNOT BE UNDONE. CLICK AGAIN TO WIPE DATA.</p>
+        </div>
+        <button style="background:none; border:none; color:#555; cursor:pointer; margin-top:10px; font-size:11px;" onclick="togglePanel()">[ CLOSE ]</button>
     </div>
 
     <div id="loginModal" class="modal-overlay">
         <div class="modal-content">
             <h2 style="color:#DC143C; text-align:center; margin-bottom:20px;">SYSTEM LOGIN</h2>
-            <div class="input-group"><label>USERNAME</label><input type="text" id="loginUser" placeholder="Enter Name"></div>
+            <div class="input-group"><label>USERNAME</label><input type="text" id="loginUser" placeholder="Name"></div>
             <div class="input-group"><label>PASSWORD</label><input type="password" placeholder="********"></div>
-            <button class="btn-retro" style="width:100%" onclick="processAuth('loginUser')">Access Database</button>
+            <button class="btn-retro" style="width:100%" onclick="processAuth('loginUser', true)">Login</button>
             <button class="btn-retro" style="width:100%; margin-top:5px; background:#333;" onclick="hideModal('loginModal')">Cancel</button>
         </div>
     </div>
@@ -144,10 +145,8 @@
     <div id="signupModal" class="modal-overlay">
         <div class="modal-content">
             <h2 style="color:#DC143C; text-align:center; margin-bottom:20px;">NEW PLAYER</h2>
-            <div class="input-group"><label>CREATE USERNAME</label><input type="text" id="signupUser" placeholder="Username"></div>
-            <div class="input-group"><label>EMAIL</label><input type="email" placeholder="user@pain.com"></div>
-            <div class="input-group"><label>PASSWORD</label><input type="password" placeholder="********"></div>
-            <button class="btn-retro" style="width:100%" onclick="processAuth('signupUser')">Initialize & Join</button>
+            <div class="input-group"><label>USERNAME</label><input type="text" id="signupUser" placeholder="Name"></div>
+            <button class="btn-retro" style="width:100%" onclick="processAuth('signupUser', false)">Initialize & Join</button>
             <button class="btn-retro" style="width:100%; margin-top:5px; background:#333;" onclick="hideModal('signupModal')">Back</button>
         </div>
     </div>
@@ -158,59 +157,130 @@
     </main>
 
     <script>
+        let deleteStage = 0;
+        let activeUserId = null;
+
         window.onload = function() {
-            const savedData = localStorage.getItem('painStudiosPlayerData');
-            if (savedData) {
-                const playerData = JSON.parse(savedData);
-                applyLoginState(playerData);
+            // Check for current session
+            const currentSession = localStorage.getItem('painStudiosCurrentSession');
+            if (currentSession) {
+                activeUserId = currentSession;
+                loadPlayerData(activeUserId);
             }
         };
 
         function showModal(id) { document.getElementById(id).style.display = 'flex'; }
         function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        function processAuth(inputId) {
-            const name = document.getElementById(inputId).value || "PLAYER_01";
-            const playerData = {
-                name: name,
-                rank: "NOVICE",
-                level: 1,
-                xp: 0,
-                friends: 0,
-                joined: new Date().toLocaleDateString()
-            };
-            localStorage.setItem('painStudiosPlayerData', JSON.stringify(playerData));
-            applyLoginState(playerData);
+        function getDatabase() {
+            return JSON.parse(localStorage.getItem('painStudiosDB')) || { users: {}, nextId: 1, availableSlots: [] };
+        }
+
+        function saveDatabase(db) {
+            localStorage.setItem('painStudiosDB', JSON.stringify(db));
+        }
+
+        function processAuth(inputId, isLogin) {
+            const name = document.getElementById(inputId).value || "PLAYER";
+            let db = getDatabase();
+            
+            if (isLogin) {
+                // For this demo, login finds the first user with that name
+                const foundId = Object.keys(db.users).find(id => db.users[id].name.toLowerCase() === name.toLowerCase());
+                if (foundId) {
+                    activeUserId = foundId;
+                    localStorage.setItem('painStudiosCurrentSession', activeUserId);
+                    loadPlayerData(activeUserId);
+                } else {
+                    alert("User not found in Database.");
+                    return;
+                }
+            } else {
+                // SIGN UP Logic - Assign ID from slot or next available
+                let newId;
+                if (db.availableSlots.length > 0) {
+                    db.availableSlots.sort((a,b) => a-b);
+                    newId = db.availableSlots.shift();
+                } else {
+                    newId = db.nextId++;
+                }
+
+                db.users[newId] = {
+                    id: newId,
+                    name: name,
+                    rank: "NOVICE",
+                    level: 1,
+                    xp: 0,
+                    joined: new Date().toLocaleDateString()
+                };
+
+                activeUserId = newId;
+                saveDatabase(db);
+                localStorage.setItem('painStudiosCurrentSession', activeUserId);
+                loadPlayerData(activeUserId);
+            }
+
             hideModal('loginModal');
             hideModal('signupModal');
         }
 
-        function applyLoginState(data) {
-            document.querySelector('.username-display').innerText = data.name.toUpperCase();
+        function loadPlayerData(id) {
+            const db = getDatabase();
+            const data = db.users[id];
+            if (!data) return;
+
+            document.querySelector('.username-display').innerText = `${data.name} #${data.id}`;
             document.getElementById('logged-out-tools').style.display = 'none';
             document.getElementById('user-identity').style.display = 'block';
+            
+            document.getElementById('stat-id').innerText = "#" + data.id;
             document.getElementById('stat-rank').innerText = data.rank;
             document.getElementById('stat-level').innerText = data.level;
             document.getElementById('stat-xp').innerText = data.xp + "/500";
-            document.getElementById('stat-friends').innerText = data.friends;
             document.getElementById('stat-joined').innerText = data.joined;
+
             document.getElementById('auth-status').innerText = "ONLINE: " + data.name;
             document.getElementById('auth-status').style.color = "#DC143C";
         }
 
+        function confirmDeletion() {
+            const btn = document.getElementById('delete-btn');
+            const text = document.getElementById('delete-confirm-text');
+            
+            if (deleteStage === 0) {
+                deleteStage = 1;
+                text.style.display = 'block';
+                btn.innerText = "CONFIRM WIPE";
+            } else {
+                deleteAccountData();
+            }
+        }
+
+        function deleteAccountData() {
+            let db = getDatabase();
+            // Free the ID slot
+            db.availableSlots.push(parseInt(activeUserId));
+            delete db.users[activeUserId];
+            
+            saveDatabase(db);
+            handleLogout();
+        }
+
         function handleLogout() {
-            localStorage.removeItem('painStudiosPlayerData');
+            localStorage.removeItem('painStudiosCurrentSession');
             location.reload();
         }
 
         function togglePanel() {
             document.getElementById('userPanel').classList.toggle('open');
+            // Reset delete button if panel closes
+            deleteStage = 0;
+            document.getElementById('delete-btn').innerText = "Delete Account";
+            document.getElementById('delete-confirm-text').style.display = 'none';
         }
 
         window.onclick = function(event) {
-            if (event.target.className === 'modal-overlay') {
-                event.target.style.display = 'none';
-            }
+            if (event.target.className === 'modal-overlay') event.target.style.display = 'none';
         }
     </script>
 </body>
