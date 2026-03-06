@@ -3,171 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flash Portal v2.0</title>
+    <title>PAIN STUDIOS | ENTER THE VOID</title>
     <style>
-        /* Flash Era Palette: Deep Grays, Vibrant Oranges/Blues, and Soft Glows */
+        /* Blocky, High-Contrast Palette */
         :root {
-            --bg-dark: #1a1a1a;
-            --panel-bg: #2d2d2d;
-            --accent: #ff9900; /* Classic Newgrounds Orange */
-            --border-glow: #444;
-            --text-color: #e0e0e0;
+            --bg-black: #0a0a0a;
+            --panel-gray: #1a1a1a;
+            --crimson: #990000;
+            --bright-red: #ff0000;
+            --text-gray: #cccccc;
+            --border-style: 2px solid #333;
         }
 
         body {
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle, #333 1px, transparent 1px);
-            background-size: 20px 20px; /* Subtle grid background */
-            color: var(--text-color);
-            font-family: 'Verdana', sans-serif;
+            background-color: var(--bg-black);
+            background-image: linear-gradient(#111 1px, transparent 1px), 
+                              linear-gradient(90deg, #111 1px, transparent 1px);
+            background-size: 40px 40px; /* Sharp grid background */
+            color: var(--text-gray);
+            font-family: 'Courier New', Courier, monospace; /* Blocky monospace font */
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 50px;
-            margin: 0;
         }
 
-        /* The Main Game Container */
-        #site-container {
-            width: 800px;
-            background: var(--panel-bg);
-            border: 4px solid #444;
-            border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.7);
-            overflow: hidden;
-            position: relative;
+        /* Container - Zero rounded corners */
+        #main-container {
+            width: 900px;
+            margin-top: 40px;
+            background: var(--panel-gray);
+            border: 4px solid #000;
+            outline: 2px solid var(--crimson);
+            box-shadow: 10px 10px 0px #000;
         }
 
-        /* Top Bar */
+        /* Header / Logo */
         header {
-            background: linear-gradient(to bottom, #444, #222);
-            padding: 10px 20px;
-            border-bottom: 2px solid var(--accent);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #000;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 5px solid var(--crimson);
         }
 
         header h1 {
+            color: var(--bright-red);
+            font-size: 3.5rem;
             margin: 0;
-            font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent);
-            text-shadow: 0 0 5px var(--accent);
+            letter-spacing: -2px;
+            text-shadow: 4px 4px 0px #4a0000;
+            font-weight: 900;
         }
 
-        /* Navigation Buttons */
+        /* Topbar Navigation */
         nav {
-            background: #222;
-            padding: 5px;
             display: flex;
-            gap: 5px;
+            background: #111;
+            border-bottom: 2px solid #333;
         }
 
         nav a {
-            background: #3d3d3d;
-            color: white;
-            padding: 8px 15px;
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            color: #fff;
             text-decoration: none;
-            font-size: 0.8rem;
             font-weight: bold;
-            border-radius: 5px;
-            transition: 0.2s;
-            border-bottom: 3px solid #1a1a1a;
+            text-transform: uppercase;
+            border-right: 1px solid #333;
+            transition: 0.1s;
         }
 
         nav a:hover {
-            background: var(--accent);
-            color: black;
-            transform: translateY(-2px);
+            background: var(--crimson);
+            color: #fff;
         }
 
-        /* Main Content "Stage" */
+        nav a.active {
+            background: var(--bright-red);
+            color: #000;
+        }
+
+        /* Content Area */
         main {
-            padding: 30px;
-            text-align: center;
-            min-height: 400px;
+            padding: 40px;
+            border-top: 1px solid #444;
         }
 
-        .loader-bar-bg {
-            width: 100%;
-            height: 20px;
-            background: #111;
-            border-radius: 10px;
-            border: 1px solid #555;
+        .content-box {
+            background: #000;
+            border: 2px solid var(--crimson);
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Custom "Loading" bar - Blocky version */
+        .status-bar {
+            height: 30px;
+            border: 2px solid #fff;
             margin: 20px 0;
-            overflow: hidden;
+            background: #222;
         }
 
-        .loader-fill {
-            width: 75%; /* Simulating a loading state */
+        .status-fill {
+            width: 66%;
             height: 100%;
-            background: linear-gradient(90deg, var(--accent), #ffcc00);
-            box-shadow: 0 0 10px var(--accent);
+            background: var(--crimson);
         }
 
-        .btn-play {
-            display: inline-block;
-            margin-top: 40px;
-            padding: 20px 60px;
-            background: linear-gradient(to bottom, #ffbb00, #ff8800);
-            color: black;
-            font-size: 1.5rem;
-            font-weight: 900;
-            text-decoration: none;
-            border-radius: 50px;
-            box-shadow: 0 5px 0 #995500, 0 10px 20px rgba(0,0,0,0.5);
-            transition: 0.1s;
-            cursor: pointer;
+        h2 {
+            color: var(--crimson);
+            border-left: 10px solid var(--crimson);
+            padding-left: 15px;
+            text-transform: uppercase;
         }
 
-        .btn-play:active {
-            transform: translateY(4px);
-            box-shadow: 0 1px 0 #995500;
-        }
-
+        /* Footer */
         footer {
-            background: #111;
+            background: #000;
             padding: 10px;
-            font-size: 0.7rem;
-            color: #666;
             text-align: center;
+            font-size: 0.7rem;
+            border-top: 2px solid #333;
+            color: #444;
         }
 
+        /* Scrollbar styling for that extra retro feel */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--crimson);
+        }
     </style>
 </head>
 <body>
 
-<div id="site-container">
+<div id="main-container">
     <header>
-        <h1>ULTIMATE_PORTFOLIO_v1.swf</h1>
-        <div style="color: #666; font-size: 0.8rem;">Quality: High</div>
+        <h1>PAIN STUDIOS</h1>
     </header>
 
     <nav>
-        <a href="#games">GAMES</a>
-        <a href="#movies">MOVIES</a>
-        <a href="#audio">AUDIO</a>
-        <a href="#about">ABOUT</a>
+        <a href="#" class="active">HOME</a>
+        <a href="#">GAMES</a>
+        <a href="#">FORUMS</a>
+        <a href="#">ACCOUNT</a>
     </nav>
 
     <main>
-        <h2>LOADING ASSETS...</h2>
-        <div class="loader-bar-bg">
-            <div class="loader-fill"></div>
+        <h2>Latest Sacrifice</h2>
+        <div class="content-box">
+            <p>// DATABASE ACCESS GRANTED...</p>
+            <p>Welcome to the new era of Pain Studios. We don't do "user-friendly." We do "fast and brutal."</p>
+            
+            <div class="status-bar">
+                <div class="status-fill"></div>
+            </div>
+            <p style="font-size: 0.8rem;">SYSTEM STATUS: 66% CORRUPTED</p>
         </div>
-        <p style="font-style: italic; color: #888;">"Tips: Press 'P' to pause... if this were a real game."</p>
-        
-        <a href="#" class="btn-play">PLAY NOW</a>
+
+        <div style="margin-top: 30px; display: flex; gap: 20px;">
+            <div style="flex: 1; border: 1px solid #333; padding: 10px;">
+                <h3 style="color: var(--bright-red); margin-top: 0;">TOP GAMES</h3>
+                <ul style="list-style: square;">
+                    <li>Vengeance Part II</li>
+                    <li>Trial by Fire</li>
+                    <li>Bone Crusher</li>
+                </ul>
+            </div>
+            <div style="flex: 1; border: 1px solid #333; padding: 10px;">
+                <h3 style="color: var(--bright-red); margin-top: 0;">USERS ONLINE</h3>
+                <p style="font-size: 1.5rem; font-weight: bold; margin: 0;">1,337</p>
+            </div>
+        </div>
     </main>
 
     <footer>
-        &copy; 2026 YourName Productions | Powered by "ActionScript 3.0" (Not really)
+        PAIN STUDIOS &copy; 2007-2026 | UNLEASH THE HATE
     </footer>
 </div>
-
-<p style="margin-top: 20px; font-size: 0.8rem; color: #555;">Get Adobe Flash Player to view this content.</p>
 
 </body>
 </html>
