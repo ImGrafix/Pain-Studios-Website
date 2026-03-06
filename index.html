@@ -3,133 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to My Digital Archive</title>
+    <title>Flash Portal v2.0</title>
     <style>
+        /* Flash Era Palette: Deep Grays, Vibrant Oranges/Blues, and Soft Glows */
         :root {
-            --bg-color: #c0c0c0; /* Classic OS Gray */
-            --border-light: #ffffff;
-            --border-dark: #808080;
-            --window-blue: #000080;
+            --bg-dark: #1a1a1a;
+            --panel-bg: #2d2d2d;
+            --accent: #ff9900; /* Classic Newgrounds Orange */
+            --border-glow: #444;
+            --text-color: #e0e0e0;
         }
 
         body {
-            background-color: #3a6ea5; /* Classic Teal Desktop */
-            font-family: "MS Sans Serif", "Arial", sans-serif;
-            margin: 20px;
-            color: #000;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle, #333 1px, transparent 1px);
+            background-size: 20px 20px; /* Subtle grid background */
+            color: var(--text-color);
+            font-family: 'Verdana', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            margin: 0;
         }
 
-        /* The Window Container */
-        .window {
-            background-color: var(--bg-color);
-            width: 90%;
-            max-width: 600px;
-            margin: 50px auto;
-            border: 2px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            box-shadow: 2px 2px 0px #000;
+        /* The Main Game Container */
+        #site-container {
+            width: 800px;
+            background: var(--panel-bg);
+            border: 4px solid #444;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.7);
+            overflow: hidden;
+            position: relative;
         }
 
-        /* Title Bar */
-        .title-bar {
-            background: var(--window-blue);
-            padding: 3px 5px;
+        /* Top Bar */
+        header {
+            background: linear-gradient(to bottom, #444, #222);
+            padding: 10px 20px;
+            border-bottom: 2px solid var(--accent);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
-            font-weight: bold;
         }
 
-        .title-bar-controls button {
-            width: 16px;
-            height: 14px;
-            font-size: 9px;
-            padding: 0;
-            background: var(--bg-color);
-            border: 1px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            cursor: pointer;
+        header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-shadow: 0 0 5px var(--accent);
         }
 
-        /* Content Area */
-        .content {
-            padding: 20px;
-        }
-
-        .inset-box {
-            background: white;
-            border: 2px inset;
-            padding: 15px;
-            margin-top: 10px;
-            min-height: 200px;
-        }
-
+        /* Navigation Buttons */
         nav {
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-dark);
-            padding-bottom: 5px;
+            background: #222;
+            padding: 5px;
+            display: flex;
+            gap: 5px;
         }
 
         nav a {
-            margin-right: 15px;
-            color: blue;
-            text-decoration: underline;
+            background: #3d3d3d;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.2s;
+            border-bottom: 3px solid #1a1a1a;
+        }
+
+        nav a:hover {
+            background: var(--accent);
+            color: black;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content "Stage" */
+        main {
+            padding: 30px;
+            text-align: center;
+            min-height: 400px;
+        }
+
+        .loader-bar-bg {
+            width: 100%;
+            height: 20px;
+            background: #111;
+            border-radius: 10px;
+            border: 1px solid #555;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .loader-fill {
+            width: 75%; /* Simulating a loading state */
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #ffcc00);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .btn-play {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 20px 60px;
+            background: linear-gradient(to bottom, #ffbb00, #ff8800);
+            color: black;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 5px 0 #995500, 0 10px 20px rgba(0,0,0,0.5);
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        .btn-play:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #995500;
         }
 
         footer {
-            margin-top: 20px;
-            font-size: 0.8em;
+            background: #111;
+            padding: 10px;
+            font-size: 0.7rem;
+            color: #666;
             text-align: center;
         }
 
-        marquee {
-            background: #000;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            padding: 3px;
-        }
     </style>
 </head>
 <body>
 
-<div class="window">
-    <div class="title-bar">
-        <span>C:\WINDOWS\EXPLORER.EXE</span>
-        <div class="title-bar-controls">
-            <button>_</button>
-            <button>X</button>
+<div id="site-container">
+    <header>
+        <h1>ULTIMATE_PORTFOLIO_v1.swf</h1>
+        <div style="color: #666; font-size: 0.8rem;">Quality: High</div>
+    </header>
+
+    <nav>
+        <a href="#games">GAMES</a>
+        <a href="#movies">MOVIES</a>
+        <a href="#audio">AUDIO</a>
+        <a href="#about">ABOUT</a>
+    </nav>
+
+    <main>
+        <h2>LOADING ASSETS...</h2>
+        <div class="loader-bar-bg">
+            <div class="loader-fill"></div>
         </div>
-    </div>
+        <p style="font-style: italic; color: #888;">"Tips: Press 'P' to pause... if this were a real game."</p>
+        
+        <a href="#" class="btn-play">PLAY NOW</a>
+    </main>
 
-    <div class="content">
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Projects</a>
-            <a href="#">Guestbook</a>
-            <a href="#">Links</a>
-        </nav>
-
-        <h1>Welcome to my Homepage</h1>
-        <p>You are visitor #00432. Thanks for stopping by!</p>
-
-        <div class="inset-box">
-            <h3>About Me</h3>
-            <p>I am building a corner of the web that isn't owned by a corporation. This site is best viewed in Netscape Navigator at 800x600 resolution.</p>
-            <hr>
-            <h3>Latest Updates</h3>
-            <ul>
-                <li>Mar 06, 2026: Launched the site!</li>
-                <li>Mar 05, 2026: Fixed the broken GIF links.</li>
-            </ul>
-        </div>
-
-        <footer>
-            <p>Built with Notepad. No cookies, no tracking, just vibes.</p>
-            <marquee scrollamount="5">*** Under Construction *** Check back soon! ***</marquee>
-        </footer>
-    </div>
+    <footer>
+        &copy; 2026 YourName Productions | Powered by "ActionScript 3.0" (Not really)
+    </footer>
 </div>
+
+<p style="margin-top: 20px; font-size: 0.8rem; color: #555;">Get Adobe Flash Player to view this content.</p>
 
 </body>
 </html>
