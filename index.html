@@ -94,21 +94,30 @@
         
         /* Hover State - Blood Red Glow */
         nav a:hover {
-            background: linear-gradient(to bottom, 
-                #cc0000 0%, 
-                #990000 50%, 
-                #4a0000 100%);
-            color: #fff;
-            box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
-        }
+        background: linear-gradient(to bottom, 
+            #b30000 0%, 
+            #800000 50%, 
+            #4d0000 100%);
+        color: #fff;
+        /* No change to cursor, it stays as the pointer hand */
+    }
+    
+    /* Active State - Fixed the 'nasty' bright red */
+    nav a.active {
+        /* Reverse the gradient to make it look 'pushed in' */
+        background: linear-gradient(to top, 
+            #4d0000 0%, 
+            #260000 100%);
         
-        /* Active State - Pressed Down */
-        nav a.active {
-            background: #ff0000;
-            color: #000;
-            text-shadow: none;
-            box-shadow: inset 4px 4px 0px #4a0000; /* Inset look */
-        }
+        color: #ff0000; /* Red text instead of black for better contrast */
+        text-shadow: 0px 0px 8px #ff0000; /* Subtle outer glow on the text */
+        
+        /* Inset shadow makes the button look physically lower than the others */
+        box-shadow: inset 3px 3px 10px #000, 
+                    inset -1px -1px 1px rgba(255,255,255,0.1);
+        
+        border-bottom: 2px solid #ff0000; /* Small red indicator line at the bottom */
+    }
         
         /* Last button border removal */
         nav a:last-child {
@@ -220,6 +229,7 @@
 
 </body>
 </html>
+
 
 
 
