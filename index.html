@@ -56,33 +56,50 @@
             font-weight: 900;
         }
 
-        /* Topbar Navigation */
+        /* Topbar Navigation - Blocky & Industrial */
         nav {
             display: flex;
-            background: #111;
-            border-bottom: 2px solid #333;
+            background: #000; /* Darker base for the bar */
+            border-bottom: 3px solid #4a0000;
         }
-
+        
         nav a {
             flex: 1;
             text-align: center;
-            padding: 15px 0;
-            color: #fff;
+            padding: 18px 0;
+            color: #ffffff;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 900;
             text-transform: uppercase;
-            border-right: 1px solid #333;
-            transition: 0.1s;
+            letter-spacing: 1px;
+            border-right: 2px solid #000;
+            
+            /* The Gradient Shadow Effect */
+            background: linear-gradient(to bottom, #7a0000 0%, #4a0000 50%, #330000 100%);
+            text-shadow: 2px 2px 0px #000;
+            box-shadow: inset 0px 1px 0px rgba(255,255,255,0.2); /* Top highlight line */
+            
+            transition: 0.05s; /* Snappy, no smooth fading */
         }
-
+        
+        /* Hover State - Brighter Red */
         nav a:hover {
-            background: var(--crimson);
+            background: linear-gradient(to bottom, #cc0000 0%, #990000 50%, #660000 100%);
             color: #fff;
+            cursor: crosshair; /* Flash game era cursor vibe */
         }
-
+        
+        /* Active State - The 'Selected' Button */
         nav a.active {
-            background: var(--bright-red);
+            background: #ff0000;
             color: #000;
+            text-shadow: none;
+            box-shadow: inset 4px 4px 0px #4a0000; /* Inset look when clicked */
+        }
+        
+        /* Remove border from the last item */
+        nav a:last-child {
+            border-right: none;
         }
 
         /* Content Area */
@@ -190,3 +207,4 @@
 
 </body>
 </html>
+
